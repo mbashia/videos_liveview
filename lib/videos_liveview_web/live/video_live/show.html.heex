@@ -1,0 +1,37 @@
+<h1>Show Video</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.video_show_path(@socket, :show, @video)}>
+    <.live_component
+      module={VideosLiveviewWeb.VideoLive.FormComponent}
+      id={@video.id}
+      title={@page_title}
+      action={@live_action}
+      video={@video}
+      return_to={Routes.video_show_path(@socket, :show, @video)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+  <li>
+    <strong>Title:</strong>
+    <%= @video.title %>
+  </li>
+
+  <li>
+    <strong>Description:</strong>
+    <%= @video.description %>
+  </li>
+
+  <li>
+    <strong>Video url:</strong>
+    <%= @video.video_url %>
+  </li>
+</ul>
+
+<span>
+  <%= live_patch("Edit", to: Routes.video_show_path(@socket, :edit, @video), class: "button") %>
+</span>
+|
+<span><%= live_redirect("Back", to: Routes.video_index_path(@socket, :index)) %></span>

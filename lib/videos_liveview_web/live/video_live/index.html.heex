@@ -1,0 +1,58 @@
+<h1>Listing Videos</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.video_index_path(@socket, :index)}>
+    <.live_component
+      module={VideosLiveviewWeb.VideoLive.FormComponent}
+      id={@video.id || :new}
+      title={@page_title}
+      action={@live_action}
+      video={@video}
+      return_to={Routes.video_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Video url</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="videos">
+    <%= for video <- @videos do %>
+      <tr id={"video-#{video.id}"}>
+        <td><%= video.title %></td>
+        <td><%= video.description %></td>
+        <td><%= video.video_url %></td>
+        <video  id="my-video" width="640" height="360" controls>
+          <source src={video.video_url} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+
+        <td>
+          <span>
+            <%= live_redirect("Show", to: Routes.video_show_path(@socket, :show, video)) %>
+          </span>
+          <span>
+            <%= live_patch("Edit", to: Routes.video_index_path(@socket, :edit, video)) %>
+          </span>
+          <span>
+            <%= link("Delete",
+              to: "#",
+              phx_click: "delete",
+              phx_value_id: video.id,
+              data: [confirm: "Are you sure?"]
+            ) %>
+          </span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch("New Video", to: Routes.video_index_path(@socket, :new)) %></span>
